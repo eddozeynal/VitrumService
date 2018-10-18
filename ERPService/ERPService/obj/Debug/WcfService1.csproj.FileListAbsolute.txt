@@ -1,0 +1,5 @@
+C:\Users\eldar.zeynalov.VEYSELOGLU\Desktop\WcfService1\WcfService1\bin\WcfService1.dll.config
+C:\Users\eldar.zeynalov.VEYSELOGLU\Desktop\WcfService1\WcfService1\bin\WcfService1.dll
+C:\Users\eldar.zeynalov.VEYSELOGLU\Desktop\WcfService1\WcfService1\bin\WcfService1.pdb
+C:\Users\eldar.zeynalov.VEYSELOGLU\Desktop\WcfService1\WcfService1\obj\Debug\WcfService1.dll
+C:\Users\eldar.zeynalov.VEYSELOGLU\Desktop\WcfService1\WcfService1\obj\Debug\WcfService1.pdb
