@@ -181,7 +181,7 @@ namespace Repositories
             }
             catch (Exception ex)
             {
-
+                return new Operation<BusinessModels.User>() { Fail = ex.Message };
             }
             return GetUserById(UserId);
         }
@@ -192,6 +192,54 @@ namespace Repositories
             try
             {
                 operation.Value = connection.Query<UserDataPermissionView>("SP_GetUserDataPermissions " + Id.ToString()).ToList();
+                operation.Successful = true;
+            }
+            catch (Exception ex)
+            {
+                operation.Fail = ex.Message;
+            }
+            return operation;
+        }
+
+        public Operation<DataPermission> PostDataPermission(DataPermission dataPermission)
+        {
+           
+            Operation<DataPermission> operation = new Operation<DataPermission>();
+
+            IDbTransaction transaction = null;
+
+            try
+            {
+                connection.Open();
+                transaction = connection.BeginTransaction();
+                string query = "select COUNT(*) cnt from DataPermission where SourceId = {0} and PermissionId = {1}";
+                query = string.Format(query,dataPermission.SourceId,dataPermission.PermissionId);
+                int exists = connection.Query<int>(query,transaction).First();
+
+                if (exists == 0)
+                {
+                    connection.Insert(dataPermission, transaction);
+                }
+               
+                transaction.Commit();
+                connection.Close();
+                operation.Successful = true;
+                operation.Value = dataPermission;
+            }
+            catch (Exception ex)
+            {
+                operation.Fail = ex.Message;
+            }
+            return operation;
+        }
+
+        public Operation<int> DeleteDataPermission(int dataPermissionId)
+        {
+            Operation<int> operation = new Operation<int>();
+            try
+            {
+                DataPermission dataPermission = connection.Get<DataPermission>(dataPermissionId);
+                connection.Delete(dataPermission);
                 operation.Successful = true;
             }
             catch (Exception ex)

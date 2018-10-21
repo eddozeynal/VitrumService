@@ -24,14 +24,6 @@ namespace ERPService
         Operation<Item> PostItem(Item item);
 
         [OperationContract]
-        [WebGet(UriTemplate = "testTuple", ResponseFormat = WebMessageFormat.Json)]
-        Tuple<User, CardMaster> testTuple();
-
-        [OperationContract]
-        [WebGet(UriTemplate = "testMulTuple", ResponseFormat = WebMessageFormat.Json)]
-        Tuple<User, CardMaster,Fiche> testMulTuple();
-
-        [OperationContract]
         [WebGet(UriTemplate = "GetItem/{Id}", ResponseFormat = WebMessageFormat.Json)]
         Operation<Item> GetItem(string Id);
 
@@ -159,5 +151,9 @@ namespace ERPService
         [OperationContract]
         [WebGet(UriTemplate = "GetAllCardsExt/{date}/{userId}", ResponseFormat = WebMessageFormat.Json)]
         Operation<List<VW_CardMaster>> GetAllCardsExt(string date, string userId);
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "PostDataPermission", Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
+        Operation<DataPermission> PostDataPermission(DataPermission dataPermission);
     }
 }

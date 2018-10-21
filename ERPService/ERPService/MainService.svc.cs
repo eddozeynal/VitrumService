@@ -130,6 +130,7 @@ namespace ERPService
 
         public Operation<Item> GetItem(string Id)
         {
+            string GUID = WebOperationContext.Current.IncomingRequest.Headers["GUID"];
             return ItemRepository.GetItem(Convert.ToInt32(Id));
         }
 
@@ -262,22 +263,12 @@ namespace ERPService
         {
             return CardRepository.GetAllCardsExt(date.GetDateFromFormattedString(), Convert.ToInt32(userId));
         }
-        public Tuple<User, CardMaster> testTuple()
+
+        public Operation<DataPermission> PostDataPermission(DataPermission dataPermission)
         {
-            User user = UserRepository.GetUserById(1).Value;
-            CardMaster card = CardRepository.GetCardMaster(1).Value;
-            Tuple<User, CardMaster> tp = new Tuple<User, CardMaster>(user, card);
-            return new Tuple<User, CardMaster>(user, card);
+            return UserRepository.PostDataPermission(dataPermission);
         }
-        public Tuple<bool, CardMaster, string> testMulTuple()
-        {
-            User user = UserRepository.GetUserById(1).Value;
-            CardMaster card = CardRepository.GetCardMaster(1).Value;
-            Tuple < User, CardMaster, Fiche > tp = new Tuple<User, CardMaster, Fiche>(user, card, new Fiche());
-            return new Tuple<bool, CardMaster, string>(true, card, "");
-            //Exception ex = new Exception();
-            //return new Tuple<bool, CardMaster, string>(false, null, ex.Message);
-        }
-      
+
+
     }
 }

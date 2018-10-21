@@ -23,6 +23,13 @@ namespace Repositories
             return gvi;
         }
 
+        public Operation<LoginSession> getLoginSession(string GUID)
+        {
+            string query = "SELECT * FROM LoginSession WHERE CreatedDate > GETDATE() - @ValidDays AND Guid = @Guid";
+            
+            LoginSession loginSession = connection.Query<LoginSession>(query, new { Guid = GUID, ValidDays = ERPService.Properties.Settings.Default.LoginSessionValidDays }).FirstOrDefault();
+            return new Operation<LoginSession>() { Successful = loginSession != null, Value = loginSession };
+        }
         public Operation<List<Parameter>> GetParameters()
         {
             Operation<List<Parameter>> r = new Operation<List<Parameter>>();
