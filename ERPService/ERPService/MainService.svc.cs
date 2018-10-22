@@ -269,6 +269,9 @@ namespace ERPService
             return UserRepository.PostDataPermission(dataPermission);
         }
 
-
+        public Operation<int> DeleteDataPermission(int dataPermissionId)
+        {
+            return UserRepository.DeleteDataPermission(dataPermissionId);
+        }
     }
 }

@@ -155,5 +155,9 @@ namespace ERPService
         [OperationContract]
         [WebInvoke(UriTemplate = "PostDataPermission", Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
         Operation<DataPermission> PostDataPermission(DataPermission dataPermission);
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "DeleteDataPermission", Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
+        Operation<int> DeleteDataPermission(int dataPermissionId);
     }
 }

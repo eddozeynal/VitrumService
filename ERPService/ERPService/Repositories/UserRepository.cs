@@ -214,7 +214,7 @@ namespace Repositories
                 transaction = connection.BeginTransaction();
                 string query = "select COUNT(*) cnt from DataPermission where SourceId = {0} and PermissionId = {1}";
                 query = string.Format(query,dataPermission.SourceId,dataPermission.PermissionId);
-                int exists = connection.Query<int>(query,transaction).First();
+                int exists = connection.Query<int>(query,null,transaction).First();
 
                 if (exists == 0)
                 {
