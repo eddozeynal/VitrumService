@@ -86,7 +86,7 @@ namespace ERPService
             }
         }
 
-        public Operation<List<VW_Item>> GetAllItems()
+        public Operation<List<ItemView>> GetAllItems()
         {
             return ItemRepository.GetAllItems();
         }
@@ -148,7 +148,7 @@ namespace ERPService
             return CardRepository.PostCardMaster(cardMaster);
         }
 
-        public Operation<List<VW_CardMaster>> GetAllCards()
+        public Operation<List<CardMasterView>> GetAllCards()
         {
             return CardRepository.GetAllCards();
         }
@@ -206,7 +206,7 @@ namespace ERPService
             return FicheRepository.PostFiche(fiche);
         }
 
-        public Operation<List<VW_FicheMaster>> GetFiches(string DocType, string dateBegin, string dateEnd)
+        public Operation<List<FicheMasterView>> GetFiches(string DocType, string dateBegin, string dateEnd)
         {
             return FicheRepository.GetFiches(Convert.ToByte(DocType), dateBegin.GetDateFromFormattedString(), dateEnd.GetDateFromFormattedString());
         }
@@ -214,6 +214,10 @@ namespace ERPService
         public Operation<Fiche> GetFicheById(string Id)
         {
             return FicheRepository.GetFicheById(Convert.ToInt32(Id));
+        }
+        public Operation<FicheView> GetFicheViewById(string Id)
+        {
+            return FicheRepository.GetFicheViewById(Convert.ToInt32(Id));
         }
 
         public Operation<List<PermissionMaster>> GetPermissionMasters()
@@ -259,7 +263,7 @@ namespace ERPService
             return CashRepository.GetCashTransactionsView(dateBegin.GetDateFromFormattedString(), dateEnd.GetDateFromFormattedString(),Convert.ToInt32(userId));
         }
 
-        public Operation<List<VW_CardMaster>> GetAllCardsExt(string date, string userId)
+        public Operation<List<CardMasterView>> GetAllCardsExt(string date, string userId)
         {
             return CardRepository.GetAllCardsExt(date.GetDateFromFormattedString(), Convert.ToInt32(userId));
         }

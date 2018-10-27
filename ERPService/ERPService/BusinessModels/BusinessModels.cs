@@ -5,12 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
 using DBModels;
+using Dapper.Contrib.Extensions;
 
 namespace BusinessModels
 {
 
     [DataContract]
-    public class VW_CardMaster : CardMaster
+    public class CardMasterView : CardMaster
     {
         [DataMember]
         public string CardTypeName { get; set; }
@@ -21,14 +22,15 @@ namespace BusinessModels
     }
 
     [DataContract]
-    public class VW_Item : Item
+    public class ItemView : Item
     {
         [DataMember]
         public string ItemTypeName { get; set; }
     }
 
     [DataContract]
-    public class VW_FicheMaster : FicheMaster
+    [Table("FicheMasterView")]
+    public class FicheMasterView : FicheMaster
     {
         [DataMember]
         public string ExchangeName { get; set; }
@@ -57,6 +59,22 @@ namespace BusinessModels
         public FicheMaster FicheMaster { get; set; }
         [DataMember]
         public List<FicheLine> FicheLines { get; set; }
+    }
+
+    [DataContract]
+    public class FicheView
+    {
+        [DataMember]
+        public FicheMasterView FicheMaster { get; set; }
+        [DataMember]
+        public List<FicheLineView> FicheLines { get; set; }
+    }
+    [Table("FicheLineView")]
+    public class FicheLineView : FicheLine
+    {
+        public string ItemCode { get; set; }
+        public string ItemName { get; set; }
+        public string ItemTypeName { get; set; }
     }
 
     [DataContract]

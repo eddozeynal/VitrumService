@@ -52,12 +52,12 @@ namespace Repositories
 
             return op_item;
         }
-        public Operation<List<VW_Item>> GetAllItems()
+        public Operation<List<ItemView>> GetAllItems()
         {
-            Operation<List<VW_Item>> r = new Operation<List<VW_Item>>();
+            Operation<List<ItemView>> r = new Operation<List<ItemView>>();
             try
             {
-                r.Value = DataIO.GetAllOff<VW_Item>();
+                r.Value = DataIO.GetAllOff<ItemView>();
                 r.Successful = true;
 
             }

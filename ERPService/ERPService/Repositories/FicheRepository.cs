@@ -161,12 +161,12 @@ namespace Repositories
             return op_fiche;
         }
 
-        public Operation<List<VW_FicheMaster>> GetFiches(byte DocType, DateTime dateBegin, DateTime dateEnd)
+        public Operation<List<FicheMasterView>> GetFiches(byte DocType, DateTime dateBegin, DateTime dateEnd)
         {
-            Operation<List<VW_FicheMaster>> op_fichemaster = new Operation<List<VW_FicheMaster>>();
+            Operation<List<FicheMasterView>> op_fichemaster = new Operation<List<FicheMasterView>>();
             try
             {
-                op_fichemaster.Value = connection.Query<VW_FicheMaster>("SELECT * FROM VW_FicheMaster WHERE DocTypeId = @DocTypeId and CreatedDate between @dateBegin and @dateEnd ", new { DocTypeId = DocType, dateBegin = dateBegin, dateEnd = dateEnd }).ToList();
+                op_fichemaster.Value = connection.Query<FicheMasterView>("SELECT * FROM FicheMasterView WHERE DocTypeId = @DocTypeId and CreatedDate between @dateBegin and @dateEnd ", new { DocTypeId = DocType, dateBegin = dateBegin, dateEnd = dateEnd }).ToList();
             }
             catch (Exception ex)
             {
@@ -185,6 +185,28 @@ namespace Repositories
                 List<FicheLine> ficheLines = new List<FicheLine>();
                 ficheMaster = connection.Get<FicheMaster>(Id);
                 ficheLines = connection.Query<FicheLine>("SELECT * FROM FicheLine WHERE FicheId = "+Id.ToString()).ToList();
+                fiche.FicheMaster = ficheMaster;
+                fiche.FicheLines = ficheLines;
+                op_fiche.Value = fiche;
+                op_fiche.Successful = true;
+            }
+            catch (Exception ex)
+            {
+                op_fiche.Fail = ex.Message;
+            }
+            return op_fiche;
+        }
+
+        public Operation<FicheView> GetFicheViewById(int Id)
+        {
+            Operation<FicheView> op_fiche = new Operation<FicheView>();
+            try
+            {
+                FicheView fiche = new FicheView();
+                FicheMasterView ficheMaster = new FicheMasterView();
+                List<FicheLineView> ficheLines = new List<FicheLineView>();
+                ficheMaster = connection.Get<FicheMasterView>(Id);
+                ficheLines = connection.Query<FicheLineView>("SELECT * FROM FicheLineView WHERE FicheId = " + Id.ToString()).ToList();
                 fiche.FicheMaster = ficheMaster;
                 fiche.FicheLines = ficheLines;
                 op_fiche.Value = fiche;

@@ -33,7 +33,7 @@ namespace ERPService
 
         [OperationContract]
         [WebGet(UriTemplate = "GetAllItems", ResponseFormat = WebMessageFormat.Json)]
-        Operation<List<VW_Item>> GetAllItems();
+        Operation<List<ItemView>> GetAllItems();
 
         [OperationContract]
         [WebGet(UriTemplate = "GetAllExchanges", ResponseFormat = WebMessageFormat.Json)]
@@ -41,7 +41,7 @@ namespace ERPService
 
         [OperationContract]
         [WebGet(UriTemplate = "GetAllCards", ResponseFormat = WebMessageFormat.Json)]
-        Operation<List<VW_CardMaster>> GetAllCards();
+        Operation<List<CardMasterView>> GetAllCards();
 
         [OperationContract]
         [WebGet(UriTemplate = "GetEnums/{EnumNumber}", ResponseFormat = WebMessageFormat.Json)]
@@ -102,7 +102,7 @@ namespace ERPService
 
         [OperationContract]
         [WebGet(UriTemplate = "GetFiches/{DocType}/{dateBegin}/{dateEnd}", ResponseFormat = WebMessageFormat.Json)]
-        Operation<List<VW_FicheMaster>> GetFiches(string DocType,string dateBegin, string dateEnd);
+        Operation<List<FicheMasterView>> GetFiches(string DocType,string dateBegin, string dateEnd);
 
         [OperationContract]
         [WebGet(UriTemplate = "GetPriceCalcTypes", ResponseFormat = WebMessageFormat.Json)]
@@ -111,6 +111,10 @@ namespace ERPService
         [OperationContract]
         [WebGet(UriTemplate = "GetFicheById/{Id}", ResponseFormat = WebMessageFormat.Json)]
         Operation<Fiche> GetFicheById(string Id);
+
+        [OperationContract]
+        [WebGet(UriTemplate = "GetFicheViewById/{Id}", ResponseFormat = WebMessageFormat.Json)]
+        Operation<FicheView> GetFicheViewById(string Id);
 
         [OperationContract]
         [WebGet(UriTemplate = "GetPermissionMasters", ResponseFormat = WebMessageFormat.Json)]
@@ -150,7 +154,7 @@ namespace ERPService
 
         [OperationContract]
         [WebGet(UriTemplate = "GetAllCardsExt/{date}/{userId}", ResponseFormat = WebMessageFormat.Json)]
-        Operation<List<VW_CardMaster>> GetAllCardsExt(string date, string userId);
+        Operation<List<CardMasterView>> GetAllCardsExt(string date, string userId);
 
         [OperationContract]
         [WebInvoke(UriTemplate = "PostDataPermission", Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]

@@ -80,12 +80,12 @@ namespace Repositories
             }
             return op_CardMaster;
         }
-        public Operation<List<VW_CardMaster>> GetAllCards()
+        public Operation<List<CardMasterView>> GetAllCards()
         {
-            Operation<List<VW_CardMaster>> r = new Operation<List<VW_CardMaster>>();
+            Operation<List<CardMasterView>> r = new Operation<List<CardMasterView>>();
             try
             {
-                r.Value = DataIO.GetAllOff<VW_CardMaster>();
+                r.Value = DataIO.GetAllOff<CardMasterView>();
                 r.Successful = true;
             }
             catch (Exception ex)
@@ -95,18 +95,18 @@ namespace Repositories
             return r;
         }
 
-        public Operation<List<VW_CardMaster>> GetAllCardsExt(DateTime date,int userId)
+        public Operation<List<CardMasterView>> GetAllCardsExt(DateTime date,int userId)
         {
-            Operation<List<VW_CardMaster>> operation = new Operation<List<VW_CardMaster>>();
+            Operation<List<CardMasterView>> operation = new Operation<List<CardMasterView>>();
             try
             {
-                List<VW_CardMaster> mainList = connection.Query<VW_CardMaster>("SP_GetCardsViewDebts @Date", new { Date = date }).ToList();
+                List<CardMasterView> mainList = connection.Query<CardMasterView>("SP_GetCardsViewDebts @Date", new { Date = date }).ToList();
                 User user = new UserRepository().GetUserById(userId).Value;
                 if (!user.BaseUser.IsAdmin)
                 {
                     List<UserDataPermissionView> userDataPermissions = (new UserRepository().GetUserDataPermissionView(userId)).Value;
                     userDataPermissions = userDataPermissions.Where(x => x.PermissionType == 1).ToList();
-                    foreach (var item in mainList.Reverse<VW_CardMaster>())
+                    foreach (var item in mainList.Reverse<CardMasterView>())
                     {
                         if (item.CardType == 4)
                         {
