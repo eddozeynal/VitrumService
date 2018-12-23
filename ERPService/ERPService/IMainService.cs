@@ -69,7 +69,7 @@ namespace ERPService
 
         [OperationContract]
         [WebGet(UriTemplate = "GetItemDefaultPricesView", ResponseFormat = WebMessageFormat.Json)]
-        Operation<List<VW_ItemPricesDefault>> GetItemDefaultPricesView();
+        Operation<List<ItemDefaultPrices>> GetItemDefaultPricesView();
 
         [OperationContract]
         [WebGet(UriTemplate = "GetItemPriceForCards/{ItemId}", ResponseFormat = WebMessageFormat.Json)]
@@ -105,6 +105,14 @@ namespace ERPService
         Operation<List<FicheMasterView>> GetFiches(string DocType,string dateBegin, string dateEnd);
 
         [OperationContract]
+        [WebGet(UriTemplate = "GetCardTransactionViewByCardId/{cardId}/{dateBegin}/{dateEnd}", ResponseFormat = WebMessageFormat.Json)]
+        Operation<List<CardTransactionView>> GetCardTransactionViewByCardId(string cardId, string dateBegin, string dateEnd);
+
+        [OperationContract]
+        [WebGet(UriTemplate = "GetCardTotalsByInterval/{userId}/{dateBegin}/{dateEnd}", ResponseFormat = WebMessageFormat.Json)]
+        Operation<List<CardTotalByIntervalView>> GetCardTotalsByInterval(string userId, string dateBegin, string dateEnd);
+
+        [OperationContract]
         [WebGet(UriTemplate = "GetPriceCalcTypes", ResponseFormat = WebMessageFormat.Json)]
         Operation<List<PriceCalcType>> GetPriceCalcTypes();
 
@@ -131,6 +139,10 @@ namespace ERPService
         [OperationContract]
         [WebGet(UriTemplate = "GetUserById/{Id}", ResponseFormat = WebMessageFormat.Json)]
         Operation<User> GetUserById(string Id);
+
+        [OperationContract]
+        [WebGet(UriTemplate = "ChangeFicheStatus/{Id}/{StatusId}", ResponseFormat = WebMessageFormat.Json)]
+        Operation<Fiche> ChangeFicheStatus(string Id, string StatusId);
 
         [OperationContract]
         [WebInvoke(UriTemplate = "PostUser", Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]

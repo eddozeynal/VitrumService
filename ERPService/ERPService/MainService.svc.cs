@@ -166,7 +166,7 @@ namespace ERPService
             return ExchangeRepository.GetExchangesFromBankByDate(Convert.ToDateTime(Date_));
         }
 
-        public Operation<List<VW_ItemPricesDefault>> GetItemDefaultPricesView()
+        public Operation<List<ItemDefaultPrices>> GetItemDefaultPricesView()
         {
             return ItemRepository.GetItemDefaultPricesView();
         }
@@ -211,6 +211,14 @@ namespace ERPService
             return FicheRepository.GetFiches(Convert.ToByte(DocType), dateBegin.GetDateFromFormattedString(), dateEnd.GetDateFromFormattedString());
         }
 
+        public Operation<List<CardTransactionView>> GetCardTransactionViewByCardId(string cardId, string dateBegin, string dateEnd)
+        {
+            return CardRepository.GetCardTransactionViewByCardId(Convert.ToInt32(cardId), dateBegin.GetDateFromFormattedString(), dateEnd.GetDateFromFormattedString());
+        }
+        public Operation<List<CardTotalByIntervalView>> GetCardTotalsByInterval(string userId, string dateBegin, string dateEnd)
+        {
+            return CardRepository.GetGetCardTotalsByInterval(Convert.ToInt32(userId), dateBegin.GetDateFromFormattedString(), dateEnd.GetDateFromFormattedString());
+        }
         public Operation<Fiche> GetFicheById(string Id)
         {
             return FicheRepository.GetFicheById(Convert.ToInt32(Id));
@@ -276,6 +284,11 @@ namespace ERPService
         public Operation<int> DeleteDataPermission(int dataPermissionId)
         {
             return UserRepository.DeleteDataPermission(dataPermissionId);
+        }
+
+        public Operation<Fiche> ChangeFicheStatus(string Id, string StatusId)
+        {
+            return FicheRepository.ChangeFicheStatus(Convert.ToInt32(Id),Convert.ToByte(StatusId));
         }
     }
 }

@@ -244,12 +244,12 @@ namespace Repositories
             return r;
         }
 
-        public Operation<List<VW_ItemPricesDefault>> GetItemDefaultPricesView()
+        public Operation<List<ItemDefaultPrices>> GetItemDefaultPricesView()
         {
-            Operation<List<VW_ItemPricesDefault>> r = new Operation<List<VW_ItemPricesDefault>>();
+            Operation<List<ItemDefaultPrices>> r = new Operation<List<ItemDefaultPrices>>();
             try
             {
-                r.Value = DataIO.GetAllOff<VW_ItemPricesDefault>();
+                r.Value = DataIO.GetAllOff<ItemDefaultPrices>();
                 r.Successful = true;
             }
             catch (Exception ex)

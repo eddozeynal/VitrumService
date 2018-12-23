@@ -240,6 +240,8 @@ namespace DBModels
         public decimal LineTotal { get; set; }
         [DataMember]
         public decimal LineNetTotal { get; set; }
+        [DataMember]
+        public bool IsCompleted { get; set; }
     }
 
     [DataContract]
@@ -473,8 +475,8 @@ namespace DBModels
     
 
     [DataContract]
-    [Table("VW_ItemPricesDefault")]
-    public class VW_ItemPricesDefault
+    [Table("ItemDefaultPrices")]
+    public class ItemDefaultPrices
     {
         [DataMember]
         public int ItemId { get; set; }
@@ -506,7 +508,23 @@ namespace DBModels
         public DateTime CreatedDate { get; set; }
     }
 
-
+    [DataContract]
+    [Table("CardTransactionView")]
+    public class CardTransactionView
+    {
+        [DataMember]
+        public string DocTypeName { get; set; }
+        [DataMember]
+        public string Ficheno { get; set; }
+        [DataMember]
+        public int CardId { get; set; }
+        [DataMember]
+        public decimal Total { get; set; }
+        [DataMember]
+        public DateTime CreatedDate { get; set; }
+        [DataMember]
+        public decimal TotalWithSign { get; set; }
+    }
 
 
 

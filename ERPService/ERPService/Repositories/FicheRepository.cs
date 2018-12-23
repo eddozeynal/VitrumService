@@ -84,55 +84,31 @@ namespace Repositories
             }
             else
             {
-                /*
+
                 IDbTransaction transaction = null;
                 try
                 {
-                    Item old_item = GetItem(item.BaseItem_.Id).Value;
+                    Fiche oldFiche = GetFicheById(fiche.FicheMaster.Id).Value;
 
                     connection.Open();
                     transaction = connection.BeginTransaction();
-                    connection.Update(item.BaseItem_, transaction);
-                    foreach (ItemUnit unit in item.ItemUnits)
-                    {
-                        if (unit.Id == 0)
-                        {
-                            unit.ItemId = item.BaseItem_.Id;
-                            connection.Insert(unit, transaction);
-                        }
-                        else
-                        {
-                            connection.Update(unit, transaction);
-                        }
-                    }
+                    connection.Update(fiche.FicheMaster, transaction);
 
-                    foreach (ItemUnit unit_old in old_item.ItemUnits)
-                    {
-                        if (!item.ItemUnits.Select(x => x.Id).Contains(unit_old.Id))
-                        {
-                            Operation<bool> op_unit_used = IsItemUnitUsed(unit_old.Id);
-                            //if(!op_unit_used.Successful)
-                            if (!op_unit_used.Value)
-                            {
-                                connection.Delete(unit_old, transaction);
-                            }
-                            else
-                            {
-                                // item unit used. cannot delete
-                                try
-                                {
-                                    transaction.Rollback();
-                                    connection.Close();
-                                }
-                                catch
-                                { }
-                                return new Operation<Item>() { Value = item, Fail = unit_old.Unit + " istifadə olunubdur. Silə bilməzsiniz!" };
-                            }
-                        }
-                    }
+                    CollectionChangesComparer<FicheLine> ccf = new CollectionChangesComparer<FicheLine>();
+                    ccf.KeyFieldName = "Id";
+                    ccf.SetInitialList(oldFiche.FicheLines);
+                    ccf.SetFinalList(fiche.FicheLines);
+
+                    var deletes = ccf.GetDeletes();
+                    connection.Delete(deletes, transaction);
+                    var inserts = ccf.GetInserts();
+                    inserts.ForEach(x => x.FicheId = fiche.FicheMaster.Id);
+                    connection.Insert(inserts, transaction);
+                    var updates = ccf.GetUpdates();
+                    connection.Update(updates, transaction);
                     transaction.Commit();
                     connection.Close();
-                    op_fiche.Value = item;
+                    op_fiche.Value = fiche;
                     op_fiche.Successful = true;
                 }
                 catch (Exception ex)
@@ -155,7 +131,7 @@ namespace Repositories
                     { }
                 }
 
-                */
+
             }
 
             return op_fiche;
@@ -218,5 +194,24 @@ namespace Repositories
             }
             return op_fiche;
         }
+
+        public Operation<Fiche> ChangeFicheStatus(int Id, byte StatusId)
+        {
+            Operation<Fiche> op_fiche = new Operation<Fiche>();
+            try
+            {
+                Fiche fiche = GetFicheById(Id).Value;
+                fiche.FicheMaster.Status_ = StatusId;
+                connection.Update(fiche.FicheMaster);
+                op_fiche.Value = fiche;
+                op_fiche.Successful = true;
+            }
+            catch (Exception ex)
+            {
+                op_fiche.Fail = ex.Message;
+            }
+            return op_fiche;
+        }
+
     }
 }

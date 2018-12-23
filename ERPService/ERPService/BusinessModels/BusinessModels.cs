@@ -22,6 +22,24 @@ namespace BusinessModels
     }
 
     [DataContract]
+    public class CardTotalByIntervalView : CardMaster
+    {
+        [DataMember]
+        public string CardTypeName { get; set; }
+        [DataMember]
+        public string ExchangeName { get; set; }
+        [DataMember]
+        public decimal RemByBegDate { get; set; }
+        [DataMember]
+        public decimal TotalInput { get; set; }
+        [DataMember]
+        public decimal TotalOutput { get; set; }
+        [DataMember]
+        public decimal RemByEndDate { get; set; }
+
+    }
+
+    [DataContract]
     public class ItemView : Item
     {
         [DataMember]
@@ -42,6 +60,12 @@ namespace BusinessModels
         public string CardNumber { get; set; }
         [DataMember]
         public string CardName { get; set; }
+        [DataMember]
+        public int LineCount { get; set; }
+        [DataMember]
+        public bool WorksCompleted { get; set; }
+        [DataMember]
+        public string StatusName { get; set; }
     }
 
     [DataContract]
@@ -68,6 +92,9 @@ namespace BusinessModels
         public FicheMasterView FicheMaster { get; set; }
         [DataMember]
         public List<FicheLineView> FicheLines { get; set; }
+
+        
+
     }
     [Table("FicheLineView")]
     public class FicheLineView : FicheLine

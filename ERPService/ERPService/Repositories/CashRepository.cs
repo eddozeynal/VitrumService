@@ -55,23 +55,6 @@ namespace Repositories
         Operation<CashTransaction> InsertCashTransaction(CashTransaction cashTransaction)
         {
             Operation<CashTransaction> op_item = new Operation<CashTransaction>();
-            //if (item.ItemTypeId == 0)
-            //{
-            //    op_item.Fail = " Məhsulun Növü Daxil Edilməyib ";
-            //    return op_item;
-            //}
-            //if (item.ItemCode.Length == 0)
-            //{
-            //    op_item.Fail = " Məhsulun Kodu Daxil Edilməyib ";
-            //    return op_item;
-            //}
-
-            //if (item.ItemName.Length == 0)
-            //{
-            //    op_item.Fail = " Məhsulun Adı Daxil Edilməyib ";
-            //    return op_item;
-            //}
-
             IDbTransaction dbTransaction = null;
             try
             {

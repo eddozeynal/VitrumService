@@ -86,6 +86,7 @@
     <Compile Include="AesCryptoProvider.cs" />
     <Compile Include="AESCryptor.cs" />
     <Compile Include="BusinessModels\BusinessModels.cs" />
+    <Compile Include="CollectionChangesComparer.cs" />
     <Compile Include="DataIO.cs" />
     <Compile Include="DBBasicGate.cs" />
     <Compile Include="DBModels\DBModels.cs" />
