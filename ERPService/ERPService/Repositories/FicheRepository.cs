@@ -1,7 +1,5 @@
-﻿using BusinessModels;
-using Dapper;
+﻿using Dapper;
 using Dapper.Contrib.Extensions;
-using DBModels;
 using ERPService;
 using System;
 using System.Collections.Generic;
@@ -9,34 +7,30 @@ using System.Data;
 using System.Linq;
 using System.Web;
 
-namespace Repositories
+namespace ERPService
 {
     public class FicheRepository
     {
         public IDbConnection connection { get { return DataIO.connection; } }
-        public Operation<Fiche> PostFiche(Fiche fiche)
+        public Operation<FicheMasterView> PostFiche(FicheMasterView fiche)
         {
 
             if (fiche == null)
             {
-                return new Operation<Fiche>() { Fail = "Fiche is null !" };
-            }
-            if (fiche.FicheMaster == null)
-            {
-                return new Operation<Fiche>() { Fail = "Fiche Master is null !" };
+                return new Operation<FicheMasterView>() { Fail = "Fiche is null !" };
             }
             if (fiche.FicheLines == null)
             {
-                return new Operation<Fiche>() { Fail = "Fiche Lines are null !" };
+                return new Operation<FicheMasterView>() { Fail = "Fiche Lines are null !" };
             }
             if (fiche.FicheLines.Count == 0)
             {
-                return new Operation<Fiche>() { Fail = "Fiche has no lines !" };
+                return new Operation<FicheMasterView>() { Fail = "Fiche has no lines !" };
             }
 
-            Operation<Fiche> op_fiche = new Operation<Fiche>();
+            Operation<FicheMasterView> op_fiche = new Operation<FicheMasterView>();
 
-            if (fiche.FicheMaster.Id == 0)
+            if (fiche.Id == 0)
             {
                 IDbTransaction transaction = null;
                 try
@@ -44,18 +38,33 @@ namespace Repositories
                     connection.Open();
                     transaction = connection.BeginTransaction();
                     // string _ficheno = connection.ExecuteScalar<string>("SP_GetNewDocumentNumber",new { DocumentTypeNumber = 1 },transaction);
-                    string _ficheno = connection.ExecuteScalar<string>("EXECUTE SP_GetNewDocumentNumber " + fiche.FicheMaster.DocTypeId.ToString(), null, transaction);
-                    fiche.FicheMaster.Ficheno = _ficheno;
-                    connection.Insert(fiche.FicheMaster, transaction);
+                    string _ficheno = connection.ExecuteScalar<string>("EXECUTE SP_GetNewDocumentNumber " + fiche.DocTypeId.ToString(), null, transaction);
+                    fiche.Ficheno = _ficheno;
+                    FicheMaster dbFicheModel = fiche;
+                    connection.Insert(dbFicheModel, transaction);
                     int LineNumber = 0;
                     foreach (FicheLine line in fiche.FicheLines)
                     {
                         LineNumber++;
-                        line.FicheId = fiche.FicheMaster.Id;
+                        line.FicheId = fiche.Id;
                         line.LineNumber = LineNumber;
                         if (line.Note == null) line.Note = "";
                     }
-                    connection.Insert(fiche.FicheLines, transaction);
+                    //List<FicheLine> dbLinesModel = fiche.FicheLines.Cast<FicheLine>().ToList();
+                    //connection.Insert(dbLinesModel, transaction);
+
+                    foreach (var line in fiche.FicheLines)
+                    {
+                        FicheLine flmodel = line;
+                        connection.Insert(flmodel, transaction);
+                        foreach (var serviceLine in line.Services)
+                        {
+                            serviceLine.FicheLineId = line.Id;
+                        }
+                        line.Services.ForEach(x=>x.Note  = x.Note ?? string.Empty);
+                        connection.Insert(line.Services.Cast<FicheLineService>(), transaction);
+                    }
+                    
                     transaction.Commit();
                     connection.Close();
                     op_fiche.Value = fiche;
@@ -88,24 +97,45 @@ namespace Repositories
                 IDbTransaction transaction = null;
                 try
                 {
-                    Fiche oldFiche = GetFicheById(fiche.FicheMaster.Id).Value;
-
+                    FicheMasterView oldFiche = GetFicheById(fiche.Id).Value;
+                   
                     connection.Open();
                     transaction = connection.BeginTransaction();
-                    connection.Update(fiche.FicheMaster, transaction);
+                    connection.Update((fiche as FicheMaster), transaction);
 
-                    CollectionChangesComparer<FicheLine> ccf = new CollectionChangesComparer<FicheLine>();
+                    CollectionChangesComparer<FicheLineView> ccf = new CollectionChangesComparer<FicheLineView>();
                     ccf.KeyFieldName = "Id";
                     ccf.SetInitialList(oldFiche.FicheLines);
                     ccf.SetFinalList(fiche.FicheLines);
 
                     var deletes = ccf.GetDeletes();
-                    connection.Delete(deletes, transaction);
+                    deletes.ForEach(x=> connection.Delete(x.Services.Cast<FicheLineService>(), transaction));
+                    connection.Delete(deletes.Cast<FicheLine>(), transaction);
                     var inserts = ccf.GetInserts();
-                    inserts.ForEach(x => x.FicheId = fiche.FicheMaster.Id);
-                    connection.Insert(inserts, transaction);
+                    inserts.ForEach(x => x.FicheId = fiche.Id);
+                    foreach (var line in inserts)
+                    {
+                        FicheLine flmodel = line;
+                        connection.Insert(flmodel, transaction);
+                        inserts.ForEach(x => x.Services = x.Services ?? new List<FicheLineServiceView>());
+                        foreach (var serviceLine in line.Services)
+                        {
+                            serviceLine.FicheLineId = line.Id;
+                        }
+                        line.Services.ForEach(x => x.Note = x.Note ?? string.Empty);
+
+                        connection.Insert(line.Services.Cast<FicheLineService>(), transaction);
+                    }
+                    // connection.Insert(inserts.Cast<FicheLine>(), transaction);
+                   
+                    //inserts.ForEach(x=>x.Services.ForEach(t=>t.FicheLineId= x.Id));
                     var updates = ccf.GetUpdates();
-                    connection.Update(updates, transaction);
+                    connection.Update(updates.Cast<FicheLine>(), transaction);
+                    foreach (var upItem in updates)
+                    {
+
+                        //var servicesOfLine = connection.Query<FicheLineService>();
+                    }
                     transaction.Commit();
                     connection.Close();
                     op_fiche.Value = fiche;
@@ -151,18 +181,17 @@ namespace Repositories
             return op_fichemaster;
         }
 
-        public Operation<Fiche> GetFicheById(int Id)
+        public Operation<FicheMasterView> GetFicheById(int Id)
         {
-            Operation<Fiche> op_fiche = new Operation<Fiche>();
+            Operation<FicheMasterView> op_fiche = new Operation<FicheMasterView>();
             try
             {
-                Fiche fiche = new Fiche();
-                FicheMaster ficheMaster = new FicheMaster();
-                List<FicheLine> ficheLines = new List<FicheLine>();
-                ficheMaster = connection.Get<FicheMaster>(Id);
-                ficheLines = connection.Query<FicheLine>("SELECT * FROM FicheLine WHERE FicheId = "+Id.ToString()).ToList();
-                fiche.FicheMaster = ficheMaster;
-                fiche.FicheLines = ficheLines;
+                FicheMasterView fiche = connection.Get<FicheMasterView>(Id);
+                fiche.FicheLines = connection.Query<FicheLineView>("SELECT * FROM FicheLineView WHERE FicheId = " + Id.ToString()).ToList();
+                foreach (var line in fiche.FicheLines)
+                {
+                    line.Services = connection.Query<FicheLineServiceView>("SELECT * FROM FicheLineServiceView WHERE FicheLineId = " + line.Id.ToString()).ToList();
+                }
                 op_fiche.Value = fiche;
                 op_fiche.Successful = true;
             }
@@ -173,36 +202,14 @@ namespace Repositories
             return op_fiche;
         }
 
-        public Operation<FicheView> GetFicheViewById(int Id)
+        public Operation<FicheMasterView> ChangeFicheStatus(int Id, byte StatusId)
         {
-            Operation<FicheView> op_fiche = new Operation<FicheView>();
+            Operation<FicheMasterView> op_fiche = new Operation<FicheMasterView>();
             try
             {
-                FicheView fiche = new FicheView();
-                FicheMasterView ficheMaster = new FicheMasterView();
-                List<FicheLineView> ficheLines = new List<FicheLineView>();
-                ficheMaster = connection.Get<FicheMasterView>(Id);
-                ficheLines = connection.Query<FicheLineView>("SELECT * FROM FicheLineView WHERE FicheId = " + Id.ToString()).ToList();
-                fiche.FicheMaster = ficheMaster;
-                fiche.FicheLines = ficheLines;
-                op_fiche.Value = fiche;
-                op_fiche.Successful = true;
-            }
-            catch (Exception ex)
-            {
-                op_fiche.Fail = ex.Message;
-            }
-            return op_fiche;
-        }
-
-        public Operation<Fiche> ChangeFicheStatus(int Id, byte StatusId)
-        {
-            Operation<Fiche> op_fiche = new Operation<Fiche>();
-            try
-            {
-                Fiche fiche = GetFicheById(Id).Value;
-                fiche.FicheMaster.Status_ = StatusId;
-                connection.Update(fiche.FicheMaster);
+                FicheMasterView fiche = GetFicheById(Id).Value;
+                fiche.Status_ = StatusId;
+                connection.Update(fiche as FicheMaster);
                 op_fiche.Value = fiche;
                 op_fiche.Successful = true;
             }

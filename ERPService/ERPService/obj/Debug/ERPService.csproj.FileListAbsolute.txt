@@ -30,9 +30,6 @@ C:\Users\eldar.zeynalov.VEYSELOGLU\Desktop\Desk\Vitrum\ERPService\ERPService\bin
 C:\Users\eldar.zeynalov.VEYSELOGLU\Desktop\Desk\Vitrum\ERPService\ERPService\obj\Debug\ERPService.csprojResolveAssemblyReference.cache
 C:\Users\eldar.zeynalov.VEYSELOGLU\Desktop\Desk\Vitrum\ERPService\ERPService\obj\Debug\ERPService.dll
 C:\Users\eldar.zeynalov.VEYSELOGLU\Desktop\Desk\Vitrum\ERPService\ERPService\obj\Debug\ERPService.pdb
-C:\Users\eldar.zeynalov.VEYSELOGLU\Source\Repos\VitrumService\ERPService\ERPService\obj\Debug\ERPService.csprojResolveAssemblyReference.cache
-C:\Users\eldar.zeynalov.VEYSELOGLU\Source\Repos\VitrumService\ERPService\ERPService\obj\Debug\ERPService.dll
-C:\Users\eldar.zeynalov.VEYSELOGLU\Source\Repos\VitrumService\ERPService\ERPService\obj\Debug\ERPService.pdb
 C:\Users\eldar.zeynalov.VEYSELOGLU\Source\Repos\VitrumService\ERPService\ERPService\bin\ERPService.dll.config
 C:\Users\eldar.zeynalov.VEYSELOGLU\Source\Repos\VitrumService\ERPService\ERPService\bin\ERPService.dll
 C:\Users\eldar.zeynalov.VEYSELOGLU\Source\Repos\VitrumService\ERPService\ERPService\bin\ERPService.pdb
@@ -42,3 +39,8 @@ C:\Users\eldar.zeynalov.VEYSELOGLU\Source\Repos\VitrumService\ERPService\ERPServ
 C:\Users\eldar.zeynalov.VEYSELOGLU\Source\Repos\VitrumService\ERPService\ERPService\bin\Dapper.xml
 C:\Users\eldar.zeynalov.VEYSELOGLU\Source\Repos\VitrumService\ERPService\ERPService\bin\Dapper.Contrib.xml
 C:\Users\eldar.zeynalov.VEYSELOGLU\Source\Repos\VitrumService\ERPService\ERPService\bin\Newtonsoft.Json.xml
+C:\Users\eldar.zeynalov.VEYSELOGLU\Source\Repos\VitrumService\ERPService\ERPService\obj\Debug\ERPService.dll
+C:\Users\eldar.zeynalov.VEYSELOGLU\Source\Repos\VitrumService\ERPService\ERPService\obj\Debug\ERPService.pdb
+C:\Users\eldar.zeynalov.VEYSELOGLU\Source\Repos\VitrumService\ERPService\ERPService\obj\Debug\ERPService.csprojAssemblyReference.cache
+C:\Users\eldar.zeynalov.VEYSELOGLU\Source\Repos\VitrumService\ERPService\ERPService\obj\Debug\ERPService.csproj.CoreCompileInputs.cache
+C:\Users\eldar.zeynalov.VEYSELOGLU\Source\Repos\VitrumService\ERPService\ERPService\obj\Debug\ERPService.csproj.CopyComplete

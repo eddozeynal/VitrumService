@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Xml.Linq;
-using DBModels;
+using Dapper;
 using ERPService;
 
-namespace Repositories
+namespace ERPService
 {
     public class ExchangeRepository
     {
@@ -59,6 +61,14 @@ namespace Repositories
                 r.Fail = ex.Message;
             }
             return r;
+        }
+        public decimal ExchangeRateByDate(int ExchangeId,DateTime Date)
+        {
+            if (GetAllExchanges().Value.Where(x => x.Id == ExchangeId).First().IsMainExchange) return 1;
+            using (IDbConnection connection = new SqlConnection(Properties.Settings.Default.DefaultConnectionString))
+            {
+                return connection.Query<decimal>("  SELECT ISNULL((select TOP(1) ExchangeRate from ExchangeByDate where Date_ <= @Date and ExchangeId = @ExchangeId order by Date_ desc),0)", new { ExchangeId = ExchangeId, Date = Date.Date }).First();
+            }
         }
     }
 }

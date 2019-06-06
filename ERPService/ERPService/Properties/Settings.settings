@@ -5,5 +5,8 @@
     <Setting Name="LoginSessionValidDays" Type="System.Int32" Scope="Application">
       <Value Profile="(Default)">2</Value>
     </Setting>
+    <Setting Name="DefaultConnectionString" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Data Source = PROGRAMMER10; Database = ERPDB; User Id = AppUser; Password = AppUser;</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

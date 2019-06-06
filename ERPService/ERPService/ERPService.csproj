@@ -22,6 +22,7 @@
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
     <TargetFrameworkProfile />
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -41,21 +42,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Dapper, Version=1.50.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Dapper.1.50.5\lib\net451\Dapper.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Dapper, Version=1.60.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.1.60.6\lib\net451\Dapper.dll</HintPath>
     </Reference>
-    <Reference Include="Dapper.Contrib, Version=1.50.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Dapper.Contrib.1.50.5\lib\net451\Dapper.Contrib.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="DBL">
-      <HintPath>..\..\..\Google Drive\LIB\DBL\DBL\bin\Debug\DBL.dll</HintPath>
+    <Reference Include="Dapper.Contrib, Version=1.60.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.Contrib.1.60.1\lib\net451\Dapper.Contrib.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data.Linq" />
@@ -83,42 +78,63 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AesCryptoProvider.cs" />
-    <Compile Include="AESCryptor.cs" />
-    <Compile Include="BusinessModels\BusinessModels.cs" />
     <Compile Include="CollectionChangesComparer.cs" />
-    <Compile Include="DataIO.cs" />
-    <Compile Include="DBBasicGate.cs" />
-    <Compile Include="DBModels\DBModels.cs" />
+    <Compile Include="Models\CashTransactionView.cs" />
+    <Compile Include="Models\ExchangeTransactionView.cs" />
+    <Compile Include="Models\FicheLineServiceView.cs" />
+    <Compile Include="Models\FicheLineView.cs" />
+    <Compile Include="Models\ItemView.cs" />
+    <Compile Include="Models\Parameter.cs" />
+    <Compile Include="ViewModels\PermissionMasterView.cs" />
+    <Compile Include="ViewModels\ViewModels.cs" />
     <Compile Include="ExtensionMethods.cs" />
-    <Compile Include="ICryptor.cs" />
+    <Compile Include="Models\Card.cs" />
+    <Compile Include="Models\CardView.cs" />
+    <Compile Include="Models\CardPermission.cs" />
+    <Compile Include="Models\CardType.cs" />
+    <Compile Include="Models\CashTransaction.cs" />
+    <Compile Include="Models\CashType.cs" />
+    <Compile Include="Models\CompanyParameter.cs" />
+    <Compile Include="Models\Currency.cs" />
+    <Compile Include="Models\CurrencyByDate.cs" />
+    <Compile Include="Models\DataLog.cs" />
+    <Compile Include="Models\DocumentMaster.cs" />
+    <Compile Include="Models\DocumentStatusType.cs" />
+    <Compile Include="Models\ExchangeTransaction.cs" />
+    <Compile Include="Models\FicheLine.cs" />
+    <Compile Include="Models\FicheLineService.cs" />
+    <Compile Include="Models\FicheMaster.cs" />
+    <Compile Include="Models\FicheMasterView.cs" />
+    <Compile Include="Models\Item.cs" />
+    <Compile Include="Models\ItemPrice.cs" />
+    <Compile Include="Models\ItemPriceType.cs" />
+    <Compile Include="Models\ItemType.cs" />
+    <Compile Include="Models\LineCalcType.cs" />
+    <Compile Include="Models\LoginSession.cs" />
+    <Compile Include="Models\PermissionDetail.cs" />
+    <Compile Include="Models\PermissionMaster.cs" />
+    <Compile Include="Models\User.cs" />
+    <Compile Include="Models\Warehouse.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Repositories\CashRepository.cs" />
-    <Compile Include="Repositories\UserRepository.cs" />
-    <Compile Include="Repositories\PrimaryRepository.cs" />
-    <Compile Include="Repositories\CardRepository.cs" />
-    <Compile Include="Repositories\ExchangeRepository.cs" />
-    <Compile Include="IOperation.cs" />
+    <Compile Include="DapperRepo.cs" />
     <Compile Include="MainService.svc.cs">
       <DependentUpon>MainService.svc</DependentUpon>
     </Compile>
     <Compile Include="IMainService.cs" />
     <Compile Include="Operation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repositories\FicheRepository.cs" />
-    <Compile Include="Repositories\ItemRepository.cs" />
-    <Compile Include="RijndaelCrypt.cs" />
-    <Compile Include="TestClass.cs" />
+    <Compile Include="Security\RijndaelCrypt.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+    <None Include="Properties\PublishProfiles\Contabo.pubxml" />
     <None Include="Properties\PublishProfiles\Local_Srv.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

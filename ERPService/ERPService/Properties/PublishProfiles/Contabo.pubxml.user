@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is used by the publish/package process of your Web project. You can customize the behavior of this process
+by editing this MSBuild file. In order to learn more about this please visit http://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <_PublishTargetUrl>C:\Users\eldar.zeynalov.VEYSELOGLU\Desktop\ConsoleApp1\service</_PublishTargetUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="bin/Dapper.Contrib.dll">
+      <publishTime>05/16/2018 18:40:52</publishTime>
+    </File>
+    <File Include="bin/Dapper.dll">
+      <publishTime>05/16/2018 18:40:30</publishTime>
+    </File>
+    <File Include="bin/DBL.dll">
+      <publishTime>08/28/2017 03:05:11</publishTime>
+    </File>
+    <File Include="bin/ERPService.dll">
+      <publishTime>02/01/2019 14:01:13</publishTime>
+    </File>
+    <File Include="bin/Newtonsoft.Json.dll">
+      <publishTime>03/24/2018 17:44:14</publishTime>
+    </File>
+    <File Include="MainService.svc">
+      <publishTime>11/24/2017 14:27:28</publishTime>
+    </File>
+    <File Include="packages.config">
+      <publishTime>08/06/2018 22:23:49</publishTime>
+    </File>
+    <File Include="Web.config">
+      <publishTime>02/01/2019 14:01:14</publishTime>
+    </File>
+  </ItemGroup>
+</Project>

@@ -34,9 +34,14 @@ namespace ERPService
             return retval;
         }
 
-        public static Tuple<bool, T, string> ToTuple<T>(IOperation<T> operation)
+        public static Tuple<bool, T, string> ToTuple<T>(Operation<T> operation)
         {
             return new Tuple<bool, T, string>(operation.Successful, operation.Value, operation.Fail);
+        }
+        public static T GetEligibleOjbect<T>(this object Value)
+        {
+            string SerializedObject = Newtonsoft.Json.JsonConvert.SerializeObject(Value);
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(SerializedObject);
         }
     }
 }

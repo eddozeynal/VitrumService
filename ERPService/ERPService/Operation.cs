@@ -8,7 +8,7 @@ using System.Web;
 namespace ERPService
 {
     [DataContract]
-    public class Operation<T> : IOperation<T>
+    public class Operation<T>
     {
         [DataMember]
         public bool Successful { get; set; }

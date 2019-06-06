@@ -1,7 +1,6 @@
-﻿using BusinessModels;
+﻿
 using Dapper;
 using Dapper.Contrib.Extensions;
-using DBModels;
 using ERPService;
 using System;
 using System.Collections.Generic;
@@ -9,7 +8,7 @@ using System.Data;
 using System.Linq;
 using System.Web;
 
-namespace Repositories
+namespace ERPService
 {
     public class UserRepository
     {
@@ -47,8 +46,7 @@ namespace Repositories
                     return op_;
                 }
 
-                User user = new User();
-                user.BaseUser = baseUser;
+                User user = baseUser.GetEligibleOjbect<User>();
                 user.PermissionDetails = permissionDetails;
                 user.LoginSession = loginSession;
                 op_.Value = user;
@@ -69,8 +67,7 @@ namespace Repositories
             {
                 BaseUser baseUser = connection.Get<BaseUser>(Id);
                 List<PermissionDetail> permissionDetails = GetPermissionDetailsByUserId(Id).Value;
-                User user = new User();
-                user.BaseUser = baseUser;
+                User user =  baseUser.GetEligibleOjbect<User>();
                 user.PermissionDetails = permissionDetails;
                 user.LoginSession = null;
                 op_.Value = user;
@@ -144,19 +141,19 @@ namespace Repositories
                 connection.Open();
                 transaction = connection.BeginTransaction();
 
-                if (user.BaseUser.Id == 0)
+                if (user.Id == 0)
                 {
-                    user.BaseUser.PassHash = "123";
+                    user.PassHash = "123";
                    
-                    connection.Insert(user.BaseUser,transaction);
-                    user.PermissionDetails.ForEach(x => x.UserId = user.BaseUser.Id);
+                    connection.Insert(user as BaseUser,transaction);
+                    user.PermissionDetails.ForEach(x => x.UserId = user.Id);
                     connection.Insert(user.PermissionDetails,transaction);
-                    UserId = user.BaseUser.Id;
+                    UserId = user.Id;
                 }
                 else
                 {
-                    UserId = user.BaseUser.Id;
-                    connection.Update(user.BaseUser, transaction);
+                    UserId = user.Id;
+                    connection.Update(user as BaseUser, transaction);
                     List<PermissionDetail> oldPermissions = GetPermissionDetailsByUserId(UserId,transaction).Value;
                     List<PermissionDetail> currentPermissions = user.PermissionDetails;
                     // delete nonexisting items
@@ -181,7 +178,7 @@ namespace Repositories
             }
             catch (Exception ex)
             {
-                return new Operation<BusinessModels.User>() { Fail = ex.Message };
+                return new Operation<User>() { Fail = ex.Message };
             }
             return GetUserById(UserId);
         }

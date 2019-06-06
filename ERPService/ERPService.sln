@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.572
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ERPService", "ERPService\ERPService.csproj", "{50FC3FAE-C090-408A-8C64-FF13E72C5657}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestOfMainService", "UnitTestOfMainService\UnitTestOfMainService.csproj", "{C20156DB-825A-4DE6-A2B1-B854635835D4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,8 +17,15 @@ Global
 		{50FC3FAE-C090-408A-8C64-FF13E72C5657}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{50FC3FAE-C090-408A-8C64-FF13E72C5657}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{50FC3FAE-C090-408A-8C64-FF13E72C5657}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C20156DB-825A-4DE6-A2B1-B854635835D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C20156DB-825A-4DE6-A2B1-B854635835D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C20156DB-825A-4DE6-A2B1-B854635835D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C20156DB-825A-4DE6-A2B1-B854635835D4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1373742C-281C-4FE9-B34B-3A90FC5BF75D}
 	EndGlobalSection
 EndGlobal

@@ -12,7 +12,7 @@ namespace ERPService.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "14.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.9.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -29,6 +29,16 @@ namespace ERPService.Properties {
         public int LoginSessionValidDays {
             get {
                 return ((int)(this["LoginSessionValidDays"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source = PROGRAMMER10; Database = ERPDB; User Id = AppUser; Password = AppUs" +
+            "er;")]
+        public string DefaultConnectionString {
+            get {
+                return ((string)(this["DefaultConnectionString"]));
             }
         }
     }

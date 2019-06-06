@@ -5,11 +5,10 @@ using System.Web;
 using Dapper;
 using System.Data;
 using Dapper.Contrib.Extensions;
-using DBModels;
 using ERPService;
-using BusinessModels;
+using System.Data.SqlClient;
 
-namespace Repositories
+namespace ERPService
 {
     public class ItemRepository
     {
@@ -225,7 +224,13 @@ namespace Repositories
 
         public Operation<List<ItemPriceForCard>> GetItemPriceForCards(string ItemId)
         {
-            string sqlQuery = " SELECT * FROM [FN_ItemPriceForCards] (" + ItemId + ") ";
+            string sqlQuery = @" 	select cm.Id CardId,cm.CardNumber,cm.CardName,itp.Price,
+	CASE WHEN itp.Id IS NULL THEN 0 ELSE 1 END IsSpecial 
+	from CardMaster cm 
+	left join ItemPrice itp on (cm.Id = itp.CardId) and (itp.PriceTypeId = 2) and (itp.ItemId = {0})
+	where cm.CardTypeId = 1 
+ ";
+            sqlQuery = string.Format(sqlQuery, ItemId);
             return DataIO.Query<ItemPriceForCard>(sqlQuery);
         }
 
@@ -244,19 +249,23 @@ namespace Repositories
             return r;
         }
 
-        public Operation<List<ItemDefaultPrices>> GetItemDefaultPricesView()
+        internal Operation<List<ItemViewAcc>> GetItemTotalsByInterval(int userId, DateTime dateBegin, DateTime dateEnd)
         {
-            Operation<List<ItemDefaultPrices>> r = new Operation<List<ItemDefaultPrices>>();
+            Operation<List<ItemViewAcc>> operation = new Operation<List<ItemViewAcc>>();
             try
             {
-                r.Value = DataIO.GetAllOff<ItemDefaultPrices>();
-                r.Successful = true;
+                using (IDbConnection connection = new SqlConnection(ERPService.Properties.Settings.Default.DefaultConnectionString))
+                {
+                    List<ItemViewAcc> mainList = connection.Query<ItemViewAcc>("SP_GetItemTotalsByInterval @begDate,@endDate", new { begDate = dateBegin, endDate = dateEnd }).ToList();
+                    operation.Value = mainList;
+                    operation.Successful = true;
+                }
             }
             catch (Exception ex)
             {
-                r.Fail = ex.Message;
+                operation.Fail = ex.Message;
             }
-            return r;
+            return operation;
         }
     }
 }
