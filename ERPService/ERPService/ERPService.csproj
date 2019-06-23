@@ -80,11 +80,24 @@
   <ItemGroup>
     <Compile Include="CollectionChangesComparer.cs" />
     <Compile Include="Models\CashTransactionView.cs" />
+    <Compile Include="Models\CurrencyByDateView.cs" />
     <Compile Include="Models\ExchangeTransactionView.cs" />
     <Compile Include="Models\FicheLineServiceView.cs" />
     <Compile Include="Models\FicheLineView.cs" />
+    <Compile Include="Models\FicheReportLineView.cs" />
+    <Compile Include="Models\FicheReportLineViewLC.cs" />
     <Compile Include="Models\ItemView.cs" />
     <Compile Include="Models\Parameter.cs" />
+    <Compile Include="Models\Personnel.cs" />
+    <Compile Include="Models\PersonnelJobMaster.cs" />
+    <Compile Include="Models\WarehouseProcessDetailView.cs" />
+    <Compile Include="Models\WarehouseProcessFiche.cs" />
+    <Compile Include="Models\WarehouseProcessView.cs" />
+    <Compile Include="Models\WarehouseProcess.cs" />
+    <Compile Include="Models\WarehouseProcessDetail.cs" />
+    <Compile Include="Models\WorkState.cs" />
+    <Compile Include="Models\WorkStateView.cs" />
+    <Compile Include="ViewModels\CardTotalByIntervalView.cs" />
     <Compile Include="ViewModels\PermissionMasterView.cs" />
     <Compile Include="ViewModels\ViewModels.cs" />
     <Compile Include="ExtensionMethods.cs" />

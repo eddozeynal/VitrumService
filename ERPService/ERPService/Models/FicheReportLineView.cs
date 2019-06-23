@@ -6,14 +6,13 @@ using Dapper.Contrib.Extensions;
 namespace ERPService.Models
 {
 	[DataContract]
-	[Table("FicheLineView")]
-	public class FicheLineView
+	[Table("FicheReportLineView")]
+	public class FicheReportLineView
 
     {
                     
 
     	[DataMember]
-		[Key]
 		public int Id { get; set; }
 
     	[DataMember]
@@ -65,28 +64,37 @@ namespace ERPService.Models
 		public decimal LineTotalAcc { get; set; }
 
     	[DataMember]
-		public bool IsCompleted { get; set; }
+		public bool IsCustomerItem { get; set; }
+
+    	[DataMember]
+		public bool IsSketched { get; set; }
+
+    	[DataMember]
+		public bool IsTemplated { get; set; }
+
+    	[DataMember]
+		public string ItemName { get; set; }
+
+    	[DataMember]
+		public string ItemCode { get; set; }
+
+    	[DataMember]
+		public string ItemTypeName { get; set; }
+
+    	[DataMember]
+		public decimal ServiceLineNetTotalSum { get; set; }
+
+    	[DataMember]
+		public decimal? LineFinalSum { get; set; }
+
+    	[DataMember]
+		public DateTime CreatedDate { get; set; }
+
+    	[DataMember]
+		public decimal CurrencyRate { get; set; }
 
         [DataMember]
-        public string ItemName { get; set; }
-
-        [DataMember]
-        public string ItemCode { get; set; }
-
-        [DataMember]
-        public string ItemTypeName { get; set; }
-
-        [DataMember]
-        public bool IsCustomerItem { get; set; }
-
-        [DataMember]
-        public bool IsSketched { get; set; }
-
-        [DataMember]
-        public bool IsTemplated { get; set; }
-
-        [DataMember]
-        public List<FicheLineServiceView> LineServices { get; set; }
+        public string Ficheno { get; set; }
     }
-}
+            }
             

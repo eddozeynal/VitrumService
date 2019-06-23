@@ -11,7 +11,7 @@ namespace ERPService.Models
 
     {
                     
-
+        [Key]
     	[DataMember]
 		public int Id { get; set; }
 
@@ -99,6 +99,12 @@ namespace ERPService.Models
     	[DataMember]
 		public string StatusName { get; set; }
 
+        [DataMember]
+        public List<FicheLineView> Lines { get; set; }
+
+        [DataMember]
+        public int ProcessId { get; set; }
+
     }
-            }
+}
             

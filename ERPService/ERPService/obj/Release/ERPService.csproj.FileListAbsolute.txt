@@ -33,8 +33,6 @@ C:\Users\eldar.zeynalov.VEYSELOGLU\Source\Repos\VitrumService\ERPService\ERPServ
 C:\Users\eldar.zeynalov.VEYSELOGLU\Source\Repos\VitrumService\ERPService\ERPService\bin\Newtonsoft.Json.xml
 C:\Users\eldar.zeynalov.VEYSELOGLU\Source\Repos\VitrumService\ERPService\ERPService\obj\Release\ERPService.dll
 C:\Users\eldar.zeynalov.VEYSELOGLU\Source\Repos\VitrumService\ERPService\ERPService\obj\Release\ERPService.pdb
-C:\Users\eldar.zeynalov.VEYSELOGLU\Source\Repos\VitrumService\ERPService\ERPService\bin\Z.Dapper.Plus.dll
-C:\Users\eldar.zeynalov.VEYSELOGLU\Source\Repos\VitrumService\ERPService\ERPService\bin\Z.Dapper.Plus.xml
 C:\Users\eldar.zeynalov.VEYSELOGLU\Source\Repos\VitrumService\ERPService\ERPService\obj\Release\ERPService.csprojAssemblyReference.cache
 C:\Users\eldar.zeynalov.VEYSELOGLU\Source\Repos\VitrumService\ERPService\ERPService\obj\Release\ERPService.csproj.CoreCompileInputs.cache
 C:\Users\eldar.zeynalov.VEYSELOGLU\Source\Repos\VitrumService\ERPService\ERPService\obj\Release\ERPService.csproj.CopyComplete
