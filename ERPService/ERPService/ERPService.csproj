@@ -72,6 +72,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Global.asax" />
     <Content Include="MainService.svc" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -79,9 +80,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CollectionChangesComparer.cs" />
-    <Compile Include="Models\CashTransactionView.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CardFiche.cs" />
+    <Compile Include="Models\CardFicheLine.cs" />
+    <Compile Include="Models\CardFicheLineView.cs" />
     <Compile Include="Models\CurrencyByDateView.cs" />
-    <Compile Include="Models\ExchangeTransactionView.cs" />
+    <Compile Include="Models\FicheExpence.cs" />
     <Compile Include="Models\FicheLineServiceView.cs" />
     <Compile Include="Models\FicheLineView.cs" />
     <Compile Include="Models\FicheReportLineView.cs" />
@@ -98,6 +104,7 @@
     <Compile Include="Models\WorkState.cs" />
     <Compile Include="Models\WorkStateView.cs" />
     <Compile Include="ViewModels\CardTotalByIntervalView.cs" />
+    <Compile Include="ViewModels\LoginData.cs" />
     <Compile Include="ViewModels\PermissionMasterView.cs" />
     <Compile Include="ViewModels\ViewModels.cs" />
     <Compile Include="ExtensionMethods.cs" />
@@ -105,7 +112,6 @@
     <Compile Include="Models\CardView.cs" />
     <Compile Include="Models\CardPermission.cs" />
     <Compile Include="Models\CardType.cs" />
-    <Compile Include="Models\CashTransaction.cs" />
     <Compile Include="Models\CashType.cs" />
     <Compile Include="Models\CompanyParameter.cs" />
     <Compile Include="Models\Currency.cs" />
@@ -113,7 +119,6 @@
     <Compile Include="Models\DataLog.cs" />
     <Compile Include="Models\DocumentMaster.cs" />
     <Compile Include="Models\DocumentStatusType.cs" />
-    <Compile Include="Models\ExchangeTransaction.cs" />
     <Compile Include="Models\FicheLine.cs" />
     <Compile Include="Models\FicheLineService.cs" />
     <Compile Include="Models\FicheMaster.cs" />

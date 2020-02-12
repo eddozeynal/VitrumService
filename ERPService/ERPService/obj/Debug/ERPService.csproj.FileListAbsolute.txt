@@ -41,6 +41,6 @@ C:\Users\eldar.zeynalov.VEYSELOGLU\Source\Repos\VitrumService\ERPService\ERPServ
 C:\Users\eldar.zeynalov.VEYSELOGLU\Source\Repos\VitrumService\ERPService\ERPService\bin\Newtonsoft.Json.xml
 C:\Users\eldar.zeynalov.VEYSELOGLU\Source\Repos\VitrumService\ERPService\ERPService\obj\Debug\ERPService.dll
 C:\Users\eldar.zeynalov.VEYSELOGLU\Source\Repos\VitrumService\ERPService\ERPService\obj\Debug\ERPService.pdb
-C:\Users\eldar.zeynalov.VEYSELOGLU\Source\Repos\VitrumService\ERPService\ERPService\obj\Debug\ERPService.csprojAssemblyReference.cache
 C:\Users\eldar.zeynalov.VEYSELOGLU\Source\Repos\VitrumService\ERPService\ERPService\obj\Debug\ERPService.csproj.CoreCompileInputs.cache
 C:\Users\eldar.zeynalov.VEYSELOGLU\Source\Repos\VitrumService\ERPService\ERPService\obj\Debug\ERPService.csproj.CopyComplete
+C:\Users\eldar.zeynalov.VEYSELOGLU\Source\Repos\VitrumService\ERPService\ERPService\obj\Debug\ERPService.csprojAssemblyReference.cache

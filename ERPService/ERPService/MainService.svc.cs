@@ -9,6 +9,7 @@ using System.ServiceModel.Web;
 using System.Text;
 using Dapper;
 using Dapper.Contrib.Extensions;
+using ErpService.Models;
 using ERPService;
 using ERPService.Models;
 using ERPService.ViewModels;
@@ -92,7 +93,36 @@ namespace ERPService
 
             return operation;
         }
-        
+        public Operation<int> GetUserIdBySession()
+        {
+            System.Threading.Thread.Sleep(1000);
+            LoginSession loginSession = LoginSessionByGuid(GUIDOfCurrentIncomingRequest);
+            if (loginSession == null || loginSession.CreatedDate < DateTime.Now.AddDays(-1))
+            {
+                return new Operation<int> { Value = 0 , Fail = "Session Ended" };
+            }
+            return new Operation<int> { Value = loginSession.UserId, Successful = true };
+        }
+        public Operation<UserView> GetUserBySession()
+        {
+            System.Threading.Thread.Sleep(1000);
+            LoginSession loginSession = LoginSessionByGuid(GUIDOfCurrentIncomingRequest);
+            if (loginSession == null || loginSession.CreatedDate < DateTime.Now.AddDays(-1))
+            {
+                return new Operation<UserView> { Value = null, Fail = "Session Ended" };
+            }
+            User baseUser = GetUserById(loginSession.UserId.ToString()).Value;
+
+            UserView user = baseUser.GetEligibleOjbect<UserView>();
+            user.PermissionDetails = connection.Query<PermissionDetail>("SELECT * FROM PermissionDetail WHERE UserId = " + user.Id.ToString()).ToList();
+            user.CardPermissions = connection.Query<CardPermission>("SELECT * FROM CardPermission WHERE UserId = " + user.Id.ToString()).ToList();
+            user.LoginSession = loginSession;
+            Operation<UserView> operation = new Operation<UserView>();
+            operation.Value = user;
+            operation.Successful = true;
+            return operation;
+        }
+
         public Operation<List<PermissionMasterView>> GetUserPermissions(string UserId)
         {
             Operation<List<PermissionMasterView>> operation = new Operation<List<PermissionMasterView>>();
@@ -146,7 +176,7 @@ namespace ERPService
             Operation<List<CardPermission>> operation = new Operation<List<CardPermission>>();
             try
             {
-                operation.Value = connection.Query<CardPermission>("SP_GetCardPermissions", new { UserId }, null, true, 0, CommandType.StoredProcedure).ToList();
+                operation.Value = connection.Query<CardPermission>("SELECT * FROM FN_GetCardPermissionsByUser (@UserId)", new { UserId }, null, true, 0, CommandType.Text).ToList();
                 operation.Successful = true;
             }
             catch (Exception ex)
@@ -166,18 +196,28 @@ namespace ERPService
             {
                 using (IDbConnection dbConnection = connection)
                 {
-                    LoginSession loginSession = dbConnection.Query<LoginSession>("select * from LoginSession WHERE Guid = @Guid",new {Guid = GUIDOfCurrentIncomingRequest }).FirstOrDefault();
+                    LoginSession loginSession = LoginSessionByGuid(GUIDOfCurrentIncomingRequest);
                     return loginSession.UserId;
                 }
             }
         }
+
+        LoginSession LoginSessionByGuid( string Guid)
+        {
+            using (IDbConnection dbConnection = connection)
+            {
+                LoginSession loginSession = dbConnection.Query<LoginSession>("select * from LoginSession WHERE Guid = @Guid", new { Guid  }).FirstOrDefault();
+                return loginSession;
+            }
+        }
+
         public Operation<List<WorkStateView>> GetWorkStates()
         {
             return new DapperRepo().GetAllT<WorkStateView>();
         }
 
         #endregion
-
+        
         #region Cards
         public Operation<Card> PostCard(Card card)
         {
@@ -187,6 +227,25 @@ namespace ERPService
         {
             return new DapperRepo().GetAllT<CardView>();
         }
+        public Operation<List<CardView>> GetCardsByUserId(string userId)
+        {
+            Operation<List<CardView>> operation = new Operation<List<CardView>>();
+            try
+            {
+                using (IDbConnection connection = new SqlConnection(Properties.Settings.Default.DefaultConnectionString))
+                {
+                    List<CardView> mainList = connection.Query<CardView>("SELECT * FROM FN_GetPermittedCards (@UserId)", new { userId = Convert.ToInt32(userId) }, null, true, 0, CommandType.Text).ToList();
+                    operation.Value = mainList;
+                    operation.Successful = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                operation.Fail = ex.Message;
+            }
+            return operation;
+        }
+
         public Operation<List<CardType>> GetCardTypes()
         {
             Operation<List<CardType>> operation = new Operation<List<CardType>>();
@@ -304,7 +363,7 @@ namespace ERPService
             Operation<List<ItemPrice>> operation = new Operation<List<ItemPrice>>();
             try
             {
-                operation.Value = connection.Query<ItemPrice>("SP_GetItemPrices", new { ItemId }, null, true, 0, CommandType.StoredProcedure).ToList();
+                operation.Value = connection.Query<ItemPrice>("SELECT * FROM ItemPrice WHERE ItemId = @ItemId", new { ItemId }, null, true, 0, CommandType.Text).ToList();
                 operation.Successful = true;
             }
             catch (Exception ex)
@@ -318,7 +377,7 @@ namespace ERPService
             Operation<List<ItemPrice>> operation = new Operation<List<ItemPrice>>();
             try
             {
-                operation.Value = connection.Query<ItemPrice>("SP_GetItemPricesByCard", new { CardId }, null, true, 0, CommandType.StoredProcedure).ToList();
+                operation.Value = connection.Query<ItemPrice>("SELECT * FROM ItemPrice WHERE CardId = @CardId", new { CardId }, null, true, 0, CommandType.Text).ToList();
                 operation.Successful = true;
             }
             catch (Exception ex)
@@ -352,14 +411,6 @@ namespace ERPService
         #endregion
 
         #region Cash
-        public Operation<CashTransaction> PostCashTransaction(CashTransaction cashTransaction)
-        {
-            if (cashTransaction.Id == 0)
-            {
-                cashTransaction.Ficheno = GetNewNumber(5);
-            }
-            return new DapperRepo().Post(cashTransaction);
-        }
         public Operation<CurrencyByDate> PostCurrencyByDate(CurrencyByDate currencyByDate)
         {
             if (currencyByDate.Rate <= 0)
@@ -374,32 +425,18 @@ namespace ERPService
             if (existingCurrencyBD != null) currencyByDate.Id = existingCurrencyBD.Id; // Cunki varsa merge edecek, merge etmek ucun de movcud olanin Id-si lazim
             return new DapperRepo().Post(currencyByDate);
         }
-        public Operation<ExchangeTransaction> PostExchangeTransaction(ExchangeTransaction exchangeTransaction)
-        {
-            if (exchangeTransaction.Id == 0)
-            {
-                exchangeTransaction.Ficheno = GetNewNumber(6);
-            }
-            return new DapperRepo().Post(exchangeTransaction);
-        }
+      
         public Operation<List<CashType>> GetCashTypes()
         {
             return new DapperRepo().GetAllT<CashType>();
         }
-        public Operation<CashTransaction> GetCashTransactionById(string Id)
+       
+        public Operation<List<CardFicheLineView>> GetCardFicheLinesView(string dateBegin, string dateEnd, string userId)
         {
-            return new DapperRepo().GetById<CashTransaction>(Id);
-        }
-        public Operation<ExchangeTransaction> GetExchangeTransactionById(string Id)
-        {
-            return new DapperRepo().GetById<ExchangeTransaction>(Id);
-        }
-        public Operation<List<CashTransactionView>> GetCashTransactionsView(string dateBegin, string dateEnd, string userId)
-        {
-            Operation<List<CashTransactionView>> operation = new Operation<List<CashTransactionView>>();
+            Operation<List<CardFicheLineView>> operation = new Operation<List<CardFicheLineView>>();
             try
             {
-                operation.Value = connection.Query<CashTransactionView>("SP_GetCashTransactionsView", new { begDate = dateBegin.GetDateFromFormattedString(), endDate = dateEnd.GetDateFromFormattedString(), userId = Convert.ToInt32(userId) }, null, true, 0, CommandType.StoredProcedure).ToList();
+                operation.Value = connection.Query<CardFicheLineView>("SP_GetCardFicheLineView", new { begDate = dateBegin.GetDateFromFormattedString(), endDate = dateEnd.GetDateFromFormattedString(), userId = Convert.ToInt32(userId) }, null, true, 0, CommandType.StoredProcedure).ToList();
                 operation.Successful = true;
             }
             catch (Exception ex)
@@ -408,20 +445,7 @@ namespace ERPService
             }
             return operation;
         }
-        public Operation<List<ExchangeTransactionView>> GetExchangeTransactionsView(string dateBegin, string dateEnd, string userId)
-        {
-            Operation<List<ExchangeTransactionView>> operation = new Operation<List<ExchangeTransactionView>>();
-            try
-            {
-                operation.Value = connection.Query<ExchangeTransactionView>("SP_GetExchangeTransactionView", new { begDate = dateBegin.GetDateFromFormattedString(), endDate = dateEnd.GetDateFromFormattedString(), userId = Convert.ToInt32(userId) }, null, true, 0, CommandType.StoredProcedure).ToList();
-                operation.Successful = true;
-            }
-            catch (Exception ex)
-            {
-                operation.Fail = ex.Message;
-            }
-            return operation;
-        }
+      
         public Operation<CurrencyByDate> GetCurrencyLastValue(string Id)
         {
             Operation<CurrencyByDate> operation = new Operation<CurrencyByDate>();
@@ -476,6 +500,22 @@ namespace ERPService
                 {
                     line.LineServices = connection.Query<FicheLineServiceView>("SELECT * FROM FicheLineServiceView WHERE FicheLineId = " + line.Id.ToString()).ToList();
                 }
+                op_fiche.Value = fiche;
+                op_fiche.Successful = true;
+            }
+            catch (Exception ex)
+            {
+                op_fiche.Fail = ex.Message;
+            }
+            return op_fiche;
+        }
+        public Operation<CardFiche> GetCardFicheById(string Id)
+        {
+            Operation<CardFiche> op_fiche = new Operation<CardFiche>();
+            try
+            {
+                CardFiche fiche = connection.Get<CardFiche>(Id);
+                fiche.Lines = connection.Query<CardFicheLine>("SELECT * FROM CardFicheLine WHERE CardFicheId = " + Id).ToList();
                 op_fiche.Value = fiche;
                 op_fiche.Successful = true;
             }
@@ -596,9 +636,9 @@ namespace ERPService
                 var updates = ccf.GetUpdates();
                 dbConnection.Update(updates.GetEligibleOjbect<List<FicheLine>>(), transaction);
 
-                foreach (FicheLineView lineView in updates)
+                foreach (FicheLineView lineView in newLines)
                 {
-                    List<FicheLineServiceView> oldServicesOfLine = fiche.Lines.Where(x => x.Id == lineView.Id).First().LineServices;
+                    List<FicheLineServiceView> oldServicesOfLine = oldLines.Where(x => x.Id == lineView.Id).First().LineServices;
                     List<FicheLineServiceView> currentServicesOfLine = lineView.LineServices;
                     CollectionChangesComparer<FicheLineServiceView> ccs = new CollectionChangesComparer<FicheLineServiceView>();
                     ccs.KeyFieldName = "Id";
@@ -636,66 +676,6 @@ namespace ERPService
 
         #endregion
 
-        //public Operation<List<Parameter>> GetParameters()
-        //{
-        //    return PrimaryRepository.GetParameters();
-        //}
-
-        //public Operation<Item> GetItem(string Id)
-        //{
-        //    string GUID = WebOperationContext.Current.IncomingRequest.Headers["GUID"];
-        //    return ItemRepository.GetItem(Convert.ToInt32(Id));
-        //}
-
-        //public Operation<Item> PostItem(Item item)
-        //{
-        //    return ItemRepository.PostItem(item);
-        //}
-
-        //public Operation<TestClassView> PostTest2(TestClassView data)
-        //{
-        //    return new ERPService.Operation<ERPService.TestClassView>() { Value = data };
-        //}
-        //public Operation<CardMaster> PostCardMaster(CardMaster cardMaster)
-        //{
-        //    return CardRepository.PostCardMaster(cardMaster);
-        //}
-
-        //public Operation<List<CardMasterView>> GetAllCards()
-        //{
-        //    return CardRepository.GetAllCards();
-        //}
-        //public Operation<List<PriceCalcType>> GetPriceCalcTypes()
-        //{
-        //    return ItemRepository.GetPriceCalcTypes();
-        //}
-        //public Operation<List<ExchangeMaster>> GetAllExchanges()
-        //{
-        //    return ExchangeRepository.GetAllExchanges();
-        //}
-
-        //public Operation<List<ExchangeByDate>> GetExchangesFromBankByDate(string Date_)
-        //{
-        //    return ExchangeRepository.GetExchangesFromBankByDate(Convert.ToDateTime(Date_));
-        //}
-
-        //public Operation<List<CardType>> GetCardTypes()
-        //{
-        //    return CardRepository.GetCardTypes();
-        //}
-
-        //public Operation<List<ItemPriceForCard>> GetItemPriceForCards(string ItemId)
-        //{
-        //    return ItemRepository.GetItemPriceForCards(ItemId);
-        //}
-
-        //public Operation<bool> PostItemPrices(List<ItemPriceOperation> ItemPrices)
-        //{
-        //    return ItemRepository.PostItemPrices(ItemPrices);
-        //}
-
-
-
         public Operation<List<DocumentMaster>> GetDocumentMasters()
         {
             return new DapperRepo().GetAllT<DocumentMaster>();
@@ -715,6 +695,7 @@ namespace ERPService
             }
             return operation;
         }
+
         public Operation<List<FicheMasterView>> GetFichesByProcessId(string ProcessId)
         {
             Operation<List<FicheMasterView>> operation = new Operation<List<FicheMasterView>>();
@@ -934,92 +915,33 @@ from WarehouseProcessFiche where ProcessId = @ProcessId ))", new { ProcessId }, 
             }
             return operation;
         }
-        //public Operation<FicheMasterView> GetFicheById(string Id)
-        //{
-        //    return FicheRepository.GetFicheById(Convert.ToInt32(Id));
-        //}
-
-        //public Operation<List<PermissionMaster>> GetPermissionMasters()
-        //{
-        //    return UserRepository.GetPermissionMasters();
-        //}
-
-        //public Operation<List<PermissionDetail>> GetPermissionDetailsByUserId(string UserId)
-        //{
-        //    return UserRepository.GetPermissionDetailsByUserId(Convert.ToInt32(UserId));
-        //}
-
-        //public Operation<CashTransaction> GetCashTransactionById(string Id)
-        //{
-        //    return CashRepository.GetCashTransaction(Convert.ToInt32(Id));
-        //}
-
-        //public Operation<CashTransaction> PostCashTransaction(CashTransaction CashTransaction)
-        //{
-        //    return CashRepository.PostCashTransaction(CashTransaction);
-        //}
-
-        //public Operation<List<UserDataPermissionView>> GetUserDataPermissionView(string UserId)
-        //{
-        //    return UserRepository.GetUserDataPermissionView(Convert.ToInt32(UserId));
-        //}
-
-
-
-        //Operation<CashTransaction> IMainService.GetCashTransactionById(string Id)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-
-        //public Operation<DataPermission> PostDataPermission(DataPermission dataPermission)
-        //{
-        //    return UserRepository.PostDataPermission(dataPermission);
-        //}
-
-        //public Operation<int> DeleteDataPermission(int dataPermissionId)
-        //{
-        //    return UserRepository.DeleteDataPermission(dataPermissionId);
-        //}
-
-        //public Operation<FicheMasterView> ChangeFicheStatus(string Id, string StatusId)
-        //{
-        //    return FicheRepository.ChangeFicheStatus(Convert.ToInt32(Id),Convert.ToByte(StatusId));
-        //}
-
-        //public Operation<FicheMasterView> PostFiche2(FicheMasterView fiche)
-        //{
-        //    return new Operation<FicheMasterView>() { Value = fiche };
-        //}
-
-        //public Operation<List<ItemViewAcc>> GetItemTotalsByInterval(string userId, string dateBegin, string dateEnd)
-        //{
-        //    return ItemRepository.GetItemTotalsByInterval(Convert.ToInt32(userId), dateBegin.GetDateFromFormattedString(), dateEnd.GetDateFromFormattedString());
-        //}
-
-        //public Operation<CashTransaction> AcceptCashTransaction(int CashTransactionId, int UserId)
-        //{
-        //    return CashRepository.AcceptCashTransaction(CashTransactionId, UserId);
-        //}
-
-        public Operation<List<CashTransactionView>> GetCashTransactionsViewByFiche(string FicheId)
+  
+        public Operation<CardFiche> PostCardFiche(CardFiche fiche)
         {
             using (IDbConnection dbConnection = connection)
             {
-                Operation<List<CashTransactionView>> operation = new Operation<List<CashTransactionView>>();
-                if (FicheId == "0")
-                {
-                    operation.Successful = true;
-                    operation.Value = new List<CashTransactionView>();
-                    return operation;
-                }
+                Operation<CardFiche> operation = new Operation<CardFiche>();
+               
                 try
                 {
-                    string query = @"SELECT * FROM CashTransactionView Where ConnectedFicheId = " + Convert.ToInt32(FicheId).ToString();
-                    List<CashTransactionView> mainList = connection.Query<CashTransactionView>(query).ToList();
-                    operation.Value = mainList;
+                    if (fiche.Id == 0)
+                        fiche.Ficheno = GetNewNumber(5);
+                    DapperRepo dapper = new DapperRepo();
+                    dapper.Post(fiche);
+                    if (fiche.Lines.Count > 0)
+                    {
+                        fiche.Lines[0].CardFicheId = fiche.Id;
+                        fiche.Lines[0].CurrencyId = GetCardById(fiche.Lines[0].CardId.ToString()).Value.CurrencyId;
+                        dapper.Post(fiche.Lines[0]);
+                    }
+                    if (fiche.Lines.Count > 1)
+                    {
+                        fiche.Lines[1].CardFicheId = fiche.Id;
+                        fiche.Lines[1].CurrencyId = GetCardById(fiche.Lines[1].CardId.ToString()).Value.CurrencyId;
+                        dapper.Post(fiche.Lines[1]);
+                    }
+                    operation.Value = fiche;
                     operation.Successful = true;
-
                 }
                 catch (Exception ex)
                 {
@@ -1028,11 +950,16 @@ from WarehouseProcessFiche where ProcessId = @ProcessId ))", new { ProcessId }, 
                 return operation;
             }
         }
-    }
 
-    public class LoginData
-    {
-        public string Login { get; set; }
-        public string PassHash { get; set; }
+        public List<CardView> GetCardsTest()
+        {
+            return GetCards().Value;
+        }
+
+        public Operation<FicheExpence> PostFicheExpence(FicheExpence ficheExpence)
+        {
+            DapperRepo dapperRepo = new DapperRepo();
+            return dapperRepo.Post(ficheExpence);
+        }
     }
 }

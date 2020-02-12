@@ -7,6 +7,7 @@ using System.ServiceModel;
 using System.ServiceModel.Web;
 using System.Text;
 using ERPService.ViewModels;
+using ErpService.Models;
 
 namespace ERPService
 {
@@ -132,6 +133,10 @@ namespace ERPService
         [WebGet(UriTemplate = "GetCards", ResponseFormat = WebMessageFormat.Json)]
         Operation<List<CardView>> GetCards();
 
+        [OperationContract]
+        [WebGet(UriTemplate = "GetCardsTest", ResponseFormat = WebMessageFormat.Json)]
+        List<CardView> GetCardsTest();
+
 
         [OperationContract]
         [WebGet(UriTemplate = "GetDocumentMasters", ResponseFormat = WebMessageFormat.Json)]
@@ -143,7 +148,9 @@ namespace ERPService
         //[OperationContract]
         //[WebGet(UriTemplate = "GetWarehouses", ResponseFormat = WebMessageFormat.Json)]
         //Operation<List<WarehouseMaster>> GetWarehouses();
-
+        [OperationContract]
+        [WebGet(UriTemplate = "GetCardsByUserId/{userId}", ResponseFormat = WebMessageFormat.Json)]
+        Operation<List<CardView>> GetCardsByUserId(string userId);
         //[OperationContract]
         //[WebGet(UriTemplate = "GetItemPricesList", ResponseFormat = WebMessageFormat.Json)]
         //Operation<List<ItemPrice>> GetItemPricesList();
@@ -151,6 +158,14 @@ namespace ERPService
         [OperationContract]
         [WebInvoke(UriTemplate = "PostFiche", Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
         Operation<FicheMasterView> PostFiche(FicheMasterView fiche);
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "PostCardFiche", Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
+        Operation<CardFiche> PostCardFiche(CardFiche cardFiche);
+
+        [OperationContract]
+        [WebInvoke(UriTemplate = "PostFicheExpence", Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
+        Operation<FicheExpence> PostFicheExpence(FicheExpence ficheExpence);
 
         [OperationContract]
         [WebInvoke(UriTemplate = "PostWarehouseProcess", Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
@@ -181,6 +196,9 @@ namespace ERPService
         [WebGet(UriTemplate = "GetCardTotalsByInterval/{userId}/{dateBegin}/{dateEnd}", ResponseFormat = WebMessageFormat.Json)]
         Operation<List<CardTotalByIntervalView>> GetCardTotalsByInterval(string userId, string dateBegin, string dateEnd);
 
+        [OperationContract]
+        [WebGet(UriTemplate = "GetCardFicheLinesView/{dateBegin}/{dateEnd}/{userId}", ResponseFormat = WebMessageFormat.Json)]
+        Operation<List<CardFicheLineView>> GetCardFicheLinesView(string dateBegin, string dateEnd, string userId);
         //[OperationContract]
         //[WebGet(UriTemplate = "GetItemTotalsByInterval/{userId}/{dateBegin}/{dateEnd}", ResponseFormat = WebMessageFormat.Json)]
         //Operation<List<ItemViewAcc>> GetItemTotalsByInterval(string userId, string dateBegin, string dateEnd);
@@ -195,16 +213,10 @@ namespace ERPService
         [WebGet(UriTemplate = "GetFicheById/{Id}", ResponseFormat = WebMessageFormat.Json)]
         Operation<FicheMasterView> GetFicheById(string Id);
 
-        //[OperationContract]
-        //[WebGet(UriTemplate = "GetPermissionMasters", ResponseFormat = WebMessageFormat.Json)]
-        //Operation<List<PermissionMaster>> GetPermissionMasters();
         [OperationContract]
-        [WebInvoke(UriTemplate = "PostExchangeTransaction", Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
-        Operation<ExchangeTransaction> PostExchangeTransaction(ExchangeTransaction exchangeTransaction);
+        [WebGet(UriTemplate = "GetCardFicheById/{Id}", ResponseFormat = WebMessageFormat.Json)]
+        Operation<CardFiche> GetCardFicheById(string Id);
 
-        [OperationContract]
-        [WebInvoke(UriTemplate = "PostCashTransaction", Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
-        Operation<CashTransaction> PostCashTransaction(CashTransaction cashTransaction);
 
         [OperationContract]
         [WebGet(UriTemplate = "GetUserPermissions/{UserId}", ResponseFormat = WebMessageFormat.Json)]
@@ -240,6 +252,14 @@ namespace ERPService
         Operation<List<Currency>> GetCurrencies();
 
         [OperationContract]
+        [WebGet(UriTemplate = "GetUserIdBySession", ResponseFormat = WebMessageFormat.Json)]
+        Operation<int> GetUserIdBySession();
+
+        [OperationContract]
+        [WebGet(UriTemplate = "GetUserBySession", ResponseFormat = WebMessageFormat.Json)]
+        Operation<UserView> GetUserBySession();
+
+        [OperationContract]
         [WebGet(UriTemplate = "GetWorkStates", ResponseFormat = WebMessageFormat.Json)]
         Operation<List<WorkStateView>> GetWorkStates();
 
@@ -263,6 +283,10 @@ namespace ERPService
         [WebInvoke(UriTemplate = "PostCurrencyByDate", Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
         Operation<CurrencyByDate> PostCurrencyByDate(CurrencyByDate currencyByDate);
 
+        //[OperationContract]
+        //[WebInvoke(UriTemplate = "ChangeStatusCardFiche", Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
+        //Operation<CardFiche> ChangeStatusCardFiche(int Id, byte Status);
+
         [OperationContract]
         [WebInvoke(UriTemplate = "WarehouseProcessBegin", Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
         Operation<WarehouseProcessView> WarehouseProcessBegin(int ProcessId);
@@ -275,14 +299,7 @@ namespace ERPService
         [WebInvoke(UriTemplate = "PostFicheMaster", Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
         Operation<FicheMaster> PostFicheMaster(FicheMaster ficheMaster);
 
-        [OperationContract]
-        [WebGet(UriTemplate = "GetCashTransactionById/{Id}", ResponseFormat = WebMessageFormat.Json)]
-        Operation<CashTransaction> GetCashTransactionById(string Id);
-
-        [OperationContract]
-        [WebGet(UriTemplate = "GetExchangeTransactionById/{Id}", ResponseFormat = WebMessageFormat.Json)]
-        Operation<ExchangeTransaction> GetExchangeTransactionById(string Id);
-
+      
         //[OperationContract]
         //[WebInvoke(UriTemplate = "PostCashTransaction", Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
         //Operation<CashTransaction> PostCashTransaction(CashTransaction cashTransaction);
@@ -295,13 +312,6 @@ namespace ERPService
         //[WebGet(UriTemplate = "GetUserDataPermissionView/{UserId}", ResponseFormat = WebMessageFormat.Json)]
         //Operation<List<UserDataPermissionView>> GetUserDataPermissionView(string UserId);
 
-        [OperationContract]
-        [WebGet(UriTemplate = "GetCashTransactionsView/{dateBegin}/{dateEnd}/{userId}", ResponseFormat = WebMessageFormat.Json)]
-        Operation<List<CashTransactionView>> GetCashTransactionsView(string dateBegin, string dateEnd, string userId);
-
-        [OperationContract]
-        [WebGet(UriTemplate = "GetExchangeTransactionsView/{dateBegin}/{dateEnd}/{userId}", ResponseFormat = WebMessageFormat.Json)]
-        Operation<List<ExchangeTransactionView>> GetExchangeTransactionsView(string dateBegin, string dateEnd, string userId);
         //[OperationContract]
         //[WebInvoke(UriTemplate = "PostDataPermission", Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedRequest)]
         //Operation<DataPermission> PostDataPermission(DataPermission dataPermission);
@@ -313,9 +323,5 @@ namespace ERPService
         //[OperationContract]
         //[WebGet(UriTemplate = "GetCardTypes", ResponseFormat = WebMessageFormat.Json)]
         //Operation<List<CardType>> GetCardTypes();
-
-        [OperationContract]
-        [WebGet(UriTemplate = "GetCashTransactionsViewByFiche/{FicheId}", ResponseFormat = WebMessageFormat.Json)]
-        Operation<List<CashTransactionView>> GetCashTransactionsViewByFiche(string FicheId);
     }
 }
